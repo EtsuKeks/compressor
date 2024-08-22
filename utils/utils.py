@@ -211,8 +211,7 @@ def get_plot_1_axis(actp_iterable_1: list, algo, params: dict):
     for i in range(len(actp_iterable_1)):
             compressor = Compressor(actp_iterable_1[i])
             x, y = algo(params, compressor)
-            axs[i].plot(x, np.log(y), label=compressor_name + '. ' + \
-                        actp_iterable_1_name + ' = ' + str(round(actp_iterable_1[i], 3)))
+            axs[i].plot(x, np.log(y), label=f"{compressor_name}. {actp_iterable_1_name}={str(round(actp_iterable_1[i], 3))}")
             axs[i].set_xlabel(x_axis_name)
             axs[i].set_ylabel(y_axis_name)
             axs[i].legend(loc="upper right")
@@ -234,9 +233,9 @@ def get_plot_2_axis(actp_iterable_1: list, actp_iterable_2: list, algo, params: 
         for j in range(len(actp_iterable_2)):
                 compressor = Compressor(actp_iterable_1[i], actp_iterable_2[j])
                 x, y = algo(params, compressor)
-                axs[i, j].plot(x, np.log(y), label=compressor_name + '. ' + \
-                            actp_iterable_1_name + '=' + str(round(actp_iterable_1[i], 3)) + \
-                            ', ' + actp_iterable_2_name + '=' + str(round(actp_iterable_2[j], 3)))
+                axs[i, j].plot(x, np.log(y), label=f"{compressor_name}. \
+                               {actp_iterable_1_name}={str(round(actp_iterable_1[i], 3))}, \
+                                {actp_iterable_2_name}={str(round(actp_iterable_2[j], 3))}")
                 axs[i, j].set_xlabel(x_axis_name)
                 axs[i, j].set_ylabel(y_axis_name)
                 axs[i, j].legend(loc="upper right")
@@ -260,10 +259,10 @@ def get_plot_3_axis(actp_iterable_1: list, actp_iterable_2: list, actp_iterable_
             for k in range(len(actp_iterable_3)):
                 compressor = Compressor(actp_iterable_1[i], actp_iterable_2[j], actp_iterable_3[k])
                 x, y = algo(params, compressor)
-                axs[i, j].plot(x, np.log(y), label=compressor_name + '. ' + \
-                               actp_iterable_1_name + '=' + str(round(actp_iterable_1[i], 3)) + \
-                            ', ' + actp_iterable_2_name + '=' + str(round(actp_iterable_2[j], 3)) + \
-                            ', ' + actp_iterable_3_name + '=' + str(round(actp_iterable_3[k], 3)))
+                axs[i, j].plot(x, np.log(y), label=f"{compressor_name}. \
+                               {actp_iterable_1_name}={str(round(actp_iterable_1[i], 3))}, \
+                                {actp_iterable_2_name}={str(round(actp_iterable_2[j], 3))}, \
+                                    {actp_iterable_3_name}={str(round(actp_iterable_3[k], 3))}")
                 axs[i, j].set_xlabel(x_axis_name)
                 axs[i, j].set_ylabel(y_axis_name)
                 axs[i, j].legend(loc="upper right")
