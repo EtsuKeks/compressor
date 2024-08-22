@@ -18,10 +18,8 @@ def QGD(params: dict, compressor: Compressor):
     for k in range(algop['max_iter']):
         for i in range(fp['n']):
             ctx = { 'w': w, 'k': k, 'ws': ws, 'i': i }
-            grads[:, i] = fp['gradf'](i, w)
-            masks[:, i] = compressor.zip(params, ctx, grads[:, i])
-            avg_density += np.sum(masks[:, i] != 0) / masks.shape[0] / fp['n']
-            grads[:, i] = np.multiply(grads[:, i], masks[:, i])
+            grads[:, i], add_density = compressor.zip(params, ctx, fp['gradf'](i, w))
+            avg_density += add_density / fp['n']
 
         grad = 1 / fp['n'] * np.sum(grads, axis=1)
 
@@ -56,10 +54,8 @@ def QAGD(params: dict, compressor: Compressor):
         
         for i in range(fp['n']):
             ctx = { 'w': w_old, 'w_old': w_new, 'k': k, 'ws': ws_new, 'ws_old': ws_old, 'i': i }
-            grads[:, i] = fp['gradf'](i, w_old)
-            masks[:, i] = compressor.zip(params, ctx, grads[:, i])
-            avg_density += np.sum(masks[:, i]) / masks.shape[0] / fp['n']
-            grads[:, i] = np.multiply(grads[:, i], masks[:, i])
+            grads[:, i], add_density = compressor.zip(params, ctx, fp['gradf'](i, w_old))
+            avg_density += add_density / fp['n']
 
         grad = 1 / fp['n'] * np.sum(grads, axis=1)
 
