@@ -1,4 +1,4 @@
-from compressors import Compressor
+from algorithms.compressors import Compressor
 import numpy as np
 
 def QGD(params: dict, compressor: Compressor):

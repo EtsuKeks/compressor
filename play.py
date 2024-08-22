@@ -1,4 +1,4 @@
-from utils import init_plots, get_plot, get_functions, get_L, get_act_val, get_data, get_divided_data
+from utils.utils import init_plots, get_plot, get_functions, get_L, get_act_val, get_data, get_divided_data
 import numpy as np
 
 def play(params: dict):

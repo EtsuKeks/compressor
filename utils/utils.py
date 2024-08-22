@@ -1,7 +1,7 @@
-from regulizers import f_L1_reg, f_L2_reg, f_elastic_reg, gradf_L1_reg, gradf_L2_reg, gradf_elastic_reg
-from funcs import f_log, f_linear, gradf_log, gradf_linear
-from criterions import by_val, by_func, by_grad
-from algorithms import QAGD, QGD
+from F.regulizers import f_L1_reg, f_L2_reg, f_elastic_reg, gradf_L1_reg, gradf_L2_reg, gradf_elastic_reg
+from F.funcs import f_log, f_linear, gradf_log, gradf_linear
+from F.criterions import by_val, by_func, by_grad
+from algorithms.algorithms import QAGD, QGD
 from sklearn.datasets import load_svmlight_file
 import matplotlib.pyplot as plt
 from datetime import datetime
