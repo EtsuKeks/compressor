@@ -30,9 +30,9 @@ def init_plots(params: dict):
     plt.rcParams.update(params_for_plots)
 
 def get_data(fp: dict):
-    file_name = './datasets/' + fp['dataset'] + '.txt'
+    file_name = f"./datasets/{fp['dataset']}.txt"
     if os.path.exists(file_name):
-        data = load_svmlight_file('./datasets/' + fp['dataset'] + '.txt')
+        data = load_svmlight_file(file_name)
         X, Y = data[0].toarray(), data[1]
         Y = 2 * Y - 3
     else: 
@@ -47,15 +47,14 @@ def get_divided_data(fp: dict):
     Ys = []
     X_diag_ys = []
     for j in range(fp['n']):
-        X_deviced = []
-        Y_deviced = []
-
         if (j == fp['n'] - 1):
             X_deviced = X[j * points_per_device :, :]
             Y_deviced = Y[j * points_per_device :]
+
         else:
             X_deviced = X[j * points_per_device : (j + 1) * points_per_device, :]
             Y_deviced = Y[j * points_per_device : (j + 1) * points_per_device]
+
         Xs.append(X_deviced)
         Ys.append(Y_deviced)
         X_diag_ys.append(np.dot(X_deviced.T, np.diag(Y_deviced)))
@@ -74,7 +73,7 @@ def get_L(fp: dict) -> np.float64:
         L = np.abs(np.max(np.linalg.eig(2/X.shape[0] * np.dot(X.T, X))[0]))
     
         if fp['mu'] is None:
-            fp['mu'] = np.min(np.linalg.eig(1/X.shape[0] * np.dot(X.T, X))[0]) / L
+            fp['mu'] = np.min(np.linalg.eig(2/X.shape[0] * np.dot(X.T, X))[0]) / L
     
             if fp['mu'] < 0:
                 raise ValueError(f"Invalid value for mu with task_type == linear: {fp['mu']}.")    
@@ -86,34 +85,6 @@ def get_L(fp: dict) -> np.float64:
         L += (1 - fp['alpha']) * fp['mu'] * L
 
     return L
-
-def get_answer(fp: dict) -> np.float64:
-    w = fp['w0'].copy()
-    for i in range(fp['max_iter_answer']):
-        if i % 1000 == 0:
-            progress = int(i/fp['max_iter_answer']*100)+1
-            progress_bar = f"Progress calculating act_val: [{progress * '#':<100}] {progress}%"
-            print(progress_bar, end='\r')
-        w = w - 1 / 10 / fp['L'] * fp['gradf'](-1, w)
-    return w
-
-def get_act_val(fp: dict) -> np.ndarray:
-    file_name = './act_vals/' + fp['dataset'] + '_' + fp['task_type'] + '_' + f"mu={fp['mu']}" + '.txt'
-    if os.path.exists(file_name):
-        with open(file_name, 'r') as file:
-            content = file.read()
-
-        nums = re.findall(r'[-+]?\d*\.\d+e[-+]?\d+|[-+]?\d*\.\d+|\d+', content)
-        nums = [float(num) for num in nums]
-        act_val = np.array(nums)
-    else:
-        print('-'*137 + f"\nFile {file_name} doesn't exist, calculating act_val...\n" + '-'*137)
-        act_val = get_answer(fp)
-        print("\nact_val calculation completed!")
-        with open(file_name, 'w') as file:
-            file.write(str(act_val))
-
-    return act_val
 
 def get_functions(fp: dict):
     mu = fp['mu'] * fp['L']
@@ -153,6 +124,34 @@ def get_functions(fp: dict):
 
     return f, gradf, criterion
 
+def get_answer(fp: dict) -> np.float64:
+    w = fp['w0'].copy()
+    for i in range(fp['max_iter_answer']):
+        if i % 1000 == 0:
+            progress = int(i/fp['max_iter_answer']*100)+1
+            progress_bar = f"Progress calculating act_val: [{progress * '#':<100}] {progress}%"
+            print(progress_bar, end='\r')
+        w = w - 1 / 10 / fp['L'] * fp['gradf'](-1, w)
+    return w
+
+def get_act_val(fp: dict) -> np.ndarray:
+    file_name = f"./act_vals/{fp['dataset']}_{fp['task_type']}_mu={fp['mu']}.txt"
+    if os.path.exists(file_name):
+        with open(file_name, 'r') as file:
+            content = file.read()
+
+        nums = re.findall(r'[-+]?\d*\.\d+e[-+]?\d+|[-+]?\d*\.\d+|\d+', content)
+        nums = [float(num) for num in nums]
+        act_val = np.array(nums)
+    else:
+        print('-'*137 + f"\nFile {file_name} doesn't exist, calculating act_val...\n" + '-'*137)
+        act_val = get_answer(fp)
+        print("\nact_val calculation completed!")
+        with open(file_name, 'w') as file:
+            file.write(str(act_val))
+
+    return act_val
+
 def get_plot(params: dict):
     actp = params['activation_params']
     actp_iterable_1 = actp['iterable_1']
@@ -180,7 +179,7 @@ def get_plot(params: dict):
         if actp_iterable_1 is None or actp_iterable_2 is None: raise ValueError(f"iterable_1 or iterable_2 is None while iterable_3 is not None.")
         get_plot_3_axis(actp_iterable_1, actp_iterable_2, actp_iterable_3, algo, params)
 
-    plt.savefig('./results/' + datetime.now().strftime("%d.%m.%Y__%H:%M:%S") + '.png', bbox_inches='tight')
+    plt.savefig(f"./results/{datetime.now().strftime("%d.%m.%Y__%H:%M:%S")}.png", bbox_inches='tight')
         
 def get_plot_0_axis(algo, params: dict):
     x_axis_name = params['algorithm_params']['x_axis_name']
