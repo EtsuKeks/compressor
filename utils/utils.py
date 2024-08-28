@@ -179,7 +179,7 @@ def get_plot(params: dict):
         if actp_iterable_1 is None or actp_iterable_2 is None: raise ValueError(f"iterable_1 or iterable_2 is None while iterable_3 is not None.")
         get_plot_3_axis(actp_iterable_1, actp_iterable_2, actp_iterable_3, algo, params)
 
-    plt.savefig(f"./results/{datetime.now().strftime("%d.%m.%Y__%H:%M:%S")}.png", bbox_inches='tight')
+    plt.savefig('./results/' + datetime.now().strftime("%d.%m.%Y__%H:%M:%S") + '.png', bbox_inches='tight')
         
 def get_plot_0_axis(algo, params: dict):
     x_axis_name = params['algorithm_params']['x_axis_name']
