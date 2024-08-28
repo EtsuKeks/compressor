@@ -1,2 +1,5 @@
 results/
 __pycache__/
+algorithms/__pycache__/
+F/__pycache__/
+utils/__pycache__/
