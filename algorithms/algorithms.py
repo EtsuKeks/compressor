@@ -6,7 +6,6 @@ def QGD(params: dict, compressor: Compressor):
     fp = params['function_params']
     
     grads = np.zeros((fp['w0'].shape[0], fp['n']))
-    masks = grads.copy()
     
     w = fp['w0'].copy()
     ws = [w]
@@ -38,7 +37,6 @@ def QAGD(params: dict, compressor: Compressor):
     gamma = np.sqrt(fp['L'] / fp['mu'])
 
     grads = np.zeros((fp['w0'].shape[0], fp['n']))
-    masks = grads.copy()
     
     w_new = fp['w0'].copy()
     w_old = fp['w0'].copy()

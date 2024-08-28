@@ -76,7 +76,7 @@ def get_L(fp: dict) -> np.float64:
             fp['mu'] = np.min(np.linalg.eig(2/X.shape[0] * np.dot(X.T, X))[0]) / L
     
             if fp['mu'] < 0:
-                raise ValueError(f"Invalid value for mu with task_type == linear: {fp['mu']}.")    
+                raise ValueError(f"Invalid value for mu with task_type == linear: mu = {fp['mu']}.")    
     
     if fp['regularization_type'] == 'L2':
         L += fp['mu'] * L

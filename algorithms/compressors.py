@@ -12,7 +12,7 @@ class Compressor:
                 таргет-функцию с её градиентом (f, gradf), константы Липшица (L)
                 и mu-сильной выпуклости (mu) градиента, функцию подсчёта 
                 значения критерия (criterion), начальную точку (w0), оптимум (act_val),
-                а также все прочее описанное в playbook.ipynb.
+                а также все прочее, описанное в playbook.ipynb.
             ctx: Контекст итерации со следующей структурой:
                 'w': Смотря что передается в конкретном алгоритме. Чаще - точка, 
                 в которой находится процесс в данный момент. 
@@ -37,18 +37,20 @@ class UncorrelatedRandK(Compressor):
         number_of_components = int(self.K / 100 * arr.size) + 1
         chosen = np.random.choice(np.arange(arr.size), number_of_components, replace=False)
         chosen = np.sort(chosen)
-        to_be_inserted = np.ones_like(chosen)
+        to_be_inserted = arr[chosen]
+
         vec_new = np.zeros(arr.size)
         vec_new = np.insert(vec_new, chosen, to_be_inserted)
         vec_new = np.delete(vec_new, chosen + np.arange(chosen.size) + 1)
-        density = 0
+
+        density = self.K / 100
         return vec_new * 100 / self.K, density
     
 class CorrelatedRandK(Compressor):
     def __init__(self, K=30, param2=None, param3=None):
         self.K = K
 
-    def zip(self, params: dict, ctx: dict, arr: np.ndarray) -> np.ndarray:
+    def zip(self, params: dict, ctx: dict, arr: np.ndarray):
         # TODO: реализовать
         pass
 
@@ -57,17 +59,16 @@ class TopK(Compressor):
         self.K = K
 
     def zip(self, params: dict, ctx: dict, arr: np.ndarray):
-        K = int(self.K / 100 * arr.size) + 1
-        chosen = np.flip(np.argsort(np.abs(arr)))[0:K]
+        number_of_components = int(self.K / 100 * arr.size) + 1
+        chosen = np.flip(np.argsort(np.abs(arr)))[0:number_of_components]
         chosen = np.sort(chosen)
-        to_be_inserted = np.ones_like(chosen)
+        to_be_inserted = arr[chosen]
 
         vec_new = np.zeros(arr.size)
         vec_new = np.insert(vec_new, chosen, to_be_inserted)
         vec_new = np.delete(vec_new, chosen + np.arange(chosen.size) + 1)
 
-        density = 0
-
+        density = self.K / 100
         return vec_new, density
 
 class NoCompressor(Compressor):
@@ -75,8 +76,7 @@ class NoCompressor(Compressor):
         pass
 
     def zip(self, params: dict, ctx: dict, arr: np.ndarray):
-        density = 0
-        return np.ones(arr.size), density
+        return arr, 1
 
 class MyCompressor(Compressor):
     def __init__(self, param1=None, param2=None, param3=None):
